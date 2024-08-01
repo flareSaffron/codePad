@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Pad</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style type="text/css">
+        body {
+            font-family: sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+
+        #header {
+            width: 100%;
+            background-color: #eeeeee;
+            padding: 5px;
+            height: 25px;
+
+        }
+
+        #logo {
+            float: left;
+            font-weight: bold;
+            font-size: 120%;
+            padding: 3px 5px;
+        }
+
+        #buttonContainer {
+            width: 233px;
+            /*200px*/
+            margin: 0 auto;
+        }
+
+        .toggleButton {
+            float: left;
+            border: 1px solid grey;
+            padding: 6px;
+            border-right: none;
+            font-size: 90%;
+
+        }
+
+        #html {
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        #Output {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            border-right: 1px solid grey;
+        }
+
+        .active {
+            background-color: lightskyblue;
+        }
+
+        .highLightedButton {
+            background-color: grey;
+        }
+
+        textarea {
+            resize: none;
+            border-color: grey;
+            border-top: none;
+        }
+
+        .panel {
+            float: left;
+            width: 50%;
+            border-left: none;
+        }
+
+        iframe {
+            border: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <div id="logo">
+            CodePad
+        </div>
+        <div id="buttonContainer">
+            <div class="toggleButton active" id="html">HTML</div>
+            <div class="toggleButton" id="css">CSS</div>
+            <div class="toggleButton" id="javaScript">JavaScipt</div>
+            <div class="toggleButton active" id="Output">Output</div>
+
+        </div>
+
+
+    </div>
+    <br>
+    <div id="bodyContainer">
+        <textarea name="htmlCode" id="htmlPanel" class="panel"><p id="paragraph">Hello World!</p></textarea>
+        <textarea id="cssPanel" class="panel hidden">p{color: orange;}</textarea>
+        <textarea id="javaScriptPanel" class="panel hidden">document.getElementById("paragraph").innerHTML="hi there";</textarea>
+
+        <iframe id="outputPanel" class="panel"></iframe>
+    </div>
+
+
+    <script type="text/javaScript">
+
+        function updateOutput() {
+            $("iframe").contents().find("html").html("<html><head><style type='text/css'>" + $("#cssPanel").val() + "</style></head><body>" + $("#htmlPanel").val() + "</body></html>");
+            document.getElementById("outputPanel").contentWindow.eval($("#javaScriptPanel").val());
+           
+        }
+
+        $(".toggleButton").hover(function () {
+            
+            $(this).addClass("highLightedButton");
+        },function(){
+            $( this).removeClass("highLightedButton");
+        });
+
+        $(".toggleButton").click(function(){
+            $(this).toggleClass("active");
+            $(this).removeClass("highLightedButton");
+            var panelId = $(this).attr("id")+"Panel";
+            // console.log("#"+panelId);
+            $("#"+panelId).toggleClass("hidden"); 
+            // $("#"+panelId).toggle(); 
+            var numberOfActivePanels = 4 - $(".hidden").length;
+            $(".panel").width($(window).width()/numberOfActivePanels-15);
+
+             
+        });
+        $(".panel").height($(window).height()-2*$("#header").height());
+        $(".panel").width($(window).width()/2-15);
+        // $("iframe").contents().find("html").html($("#htmlPanel").val());
+        updateOutput();
+        $("textarea").on("change keyup paste", function() {
+            // $("iframe").contents().find("html").html("<html><head><style type='text/css'>" + $("#cssPanel").val() + "</style></head><body>" + $("#htmlPanel").val() + "</body></html>");
+            // $("iframe").contents().find("html").html("<html><head><style type='text/css'>" + $("#cssPanel").val() + "</style></head><body>" + $("#htmlPanel").val() + "</body></html>");
+            updateOutput();
+        });
+    </script>
+</body>
+
+</html>
